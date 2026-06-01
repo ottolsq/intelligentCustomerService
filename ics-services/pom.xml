@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ics</groupId>
+        <artifactId>intelligent-customer-service</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ics-services</artifactId>
+    <packaging>pom</packaging>
+    <name>ICS Services</name>
+
+    <modules>
+        <module>ics-gateway</module>
+        <module>ics-platform</module>
+        <module>ics-conversation</module>
+        <module>ics-knowledge</module>
+        <module>ics-rule-engine</module>
+        <module>ics-ai</module>
+        <module>ics-analytics</module>
+        <module>ics-integration</module>
+    </modules>
+
+</project>
