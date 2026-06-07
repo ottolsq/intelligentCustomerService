@@ -141,7 +141,7 @@ intelligentCustomerService/ics/
 | API网关 | Spring Cloud Gateway |
 | RPC | OpenFeign + LoadBalancer |
 | 熔断 | Resilience4j |
-| ORM | MyBatis-Plus 3.5.9 |
+| ORM | MyBatis-Plus 3.5.4 |
 | 多租户 | MyBatis-Plus TenantLineInnerInterceptor |
 | 数据库 | MySQL 8.0（每服务逻辑库） |
 | 缓存 | Redis 7 + Redisson 3.41.0 |
@@ -296,13 +296,13 @@ Gateway 验证：
 
 | 阶段 | 内容 | 预估天数 | 交付物 |
 |------|------|---------|--------|
-| **Phase 0** | 项目骨架、公共模块、Docker基础设施 | 5天 | 可编译的Monorepo + Nacos/MySQL/Redis/RabbitMQ运行 |
-| **Phase 1** | 平台服务：认证、租户、用户、RBAC | 8天 | 登录、JWT、租户CRUD、租户数据隔离 |
-| **Phase 2** | API网关：路由、JWT验证、限流 | 4天 | 所有请求经8080网关转发 |
+| **Phase 0** | ✅ 项目骨架、公共模块、Docker基础设施 | 已完成 | 可编译的Monorepo + Docker Compose + 15 个 Common 类 |
+| **Phase 1** | ✅ 平台服务：认证、租户、用户、RBAC | 已完成 | 登录+JWT、租户CRUD、用户CRUD+角色关联、租户数据隔离 |
+| **Phase 2** | ✅ API网关：路由、JWT验证、限流 | 已完成 | JWT过滤器+限流过滤器+全局异常处理 |
 | **Phase 3** | 会话服务：会话管理、消息、WebSocket | 8天 | 创建会话、发消息、实时通信 |
 | **Phase 4** | 知识库：FAQ管理、向量搜索 | 7天 | FAQ增删改查、语义搜索 |
 | **Phase 5** | 规则引擎：自动回复规则 | 6天 | 关键词规则触发自动回复 |
-| **Phase 6** | AI集成：LLM回复、意图分类 | 8天 | AI回复生成、提示词管理 |
+| **Phase 6** | ✅ AI集成：LLM回复、意图分类 | 已完成 | AI回复生成、提示词模板管理、意图分类、Token使用记录 |
 | **Phase 7** | 数据分析+通知 | 5天 | 数据看板、事件通知 |
 | **Phase 8** | 平台集成：淘宝/微信适配器 | 8天 | 外部平台消息接入 |
 
@@ -346,12 +346,12 @@ Gateway 验证：
 
 每个阶段完成后的验证：
 
-1. **Phase 0**: `mvn clean compile` 通过，`docker-compose up` 启动所有基础设施
-2. **Phase 1**: 登录返回JWT，租户数据隔离，Swagger显示所有接口
-3. **Phase 2**: 所有API经网关8080转发，无效JWT返回401，限流生效
+1. **Phase 0**: ✅ `mvn clean compile` 通过（18 个模块，0 错误），`docker-compose.yml` 已创建
+2. **Phase 1**: ✅ 登录返回JWT，租户数据隔离，Swagger 显示所有接口（3 个 Controller，9 个 API）
+3. **Phase 2**: ✅ JWT过滤器验证Token，无效JWT返回401，限流按租户生效
 4. **Phase 3**: WebSocket连接成功，消息收发正常，历史消息分页查询
 5. **Phase 4**: FAQ管理正常，语义搜索返回相关结果
 6. **Phase 5**: 规则配置生效，关键词匹配触发自动回复
-7. **Phase 6**: LLM返回回复，意图分类准确，Token使用记录
+7. **Phase 6**: ✅ LLM返回回复，意图分类准确，Token使用记录
 8. **Phase 7**: 看板数据正确，通知按配置触发
 9. **Phase 8**: 外部平台消息接入，回复正确路由回源

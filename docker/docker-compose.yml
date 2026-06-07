@@ -1,0 +1,118 @@
+version: '3.8'
+
+# 智能客服 SaaS 平台 - 基础设施
+# 用法：docker-compose up -d
+
+services:
+  # ==================== Nacos 注册/配置中心 ====================
+  nacos:
+    image: nacos/nacos-server:v2.3.2
+    container_name: ics-nacos
+    environment:
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_SERVICE_HOST=mysql
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_SERVICE_DB_NAME=nacos_config
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=root123456
+      - NACOS_AUTH_ENABLE=true
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    volumes:
+      - nacos_data:/home/nacos/data
+    networks:
+      - ics-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ==================== MySQL 数据库 ====================
+  mysql:
+    image: mysql:8.0
+    container_name: ics-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root123456
+      - MYSQL_DATABASE=nacos_config
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../sql/init:/docker-entrypoint-initdb.d
+    networks:
+      - ics-network
+    command: >
+      --default-authentication-plugin=caching_sha2_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max-connections=1000
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==================== Redis 缓存 ====================
+  redis:
+    image: redis:7-alpine
+    container_name: ics-redis
+    command: redis-server --requirepass redis123456 --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ics-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redis123456", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==================== RabbitMQ 消息队列 ====================
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: ics-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - ics-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==================== MinIO 对象存储 ====================
+  minio:
+    image: minio/minio:latest
+    container_name: ics-minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minio123456
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - ics-network
+
+volumes:
+  nacos_data:
+  mysql_data:
+  redis_data:
+  rabbitmq_data:
+  minio_data:
+
+networks:
+  ics-network:
+    driver: bridge

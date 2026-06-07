@@ -26,11 +26,11 @@
 
         <!-- Spring Boot & Cloud -->
         <spring-boot.version>3.5.7</spring-boot.version>
-        <spring-cloud.version>2024.0.0</spring-cloud.version>
-        <spring-cloud-alibaba.version>2023.0.3.3</spring-cloud-alibaba.version>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-cloud-alibaba.version>2025.0.0.0</spring-cloud-alibaba.version>
 
         <!-- 第三方依赖版本 -->
-        <mybatis-plus.version>3.5.9</mybatis-plus.version>
+        <mybatis-plus.version>3.5.14</mybatis-plus.version>
         <mysql.version>9.1.0</mysql.version>
         <redisson.version>3.41.0</redisson.version>
         <jjwt.version>0.12.6</jjwt.version>
@@ -166,6 +166,13 @@
                 <version>${liteflow.version}</version>
             </dependency>
 
+            <!-- MyBatis-Plus JSqlParser (3.5.5+ 需要单独依赖) -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-jsqlparser</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
             <!-- ==================== 内部模块版本管理 ==================== -->
             <dependency>
                 <groupId>com.ics</groupId>
@@ -228,6 +235,13 @@
                         <source>${java.version}</source>
                         <target>${java.version}</target>
                         <parameters>true</parameters>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>1.18.38</version>
+                            </path>
+                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
             </plugins>

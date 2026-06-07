@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ics.platform.mapper.UserMapper">
+
+    <select id="selectByUsernameAndTenantId" resultType="com.ics.platform.entity.User">
+        SELECT * FROM sys_user
+        WHERE username = #{username}
+          AND tenant_id = #{tenantId}
+          AND deleted = 0
+        LIMIT 1
+    </select>
+
+</mapper>

@@ -1,0 +1,30 @@
+package com.ics.swagger.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * Swagger/OpenAPI 配置
+ */
+@Configuration
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("智能客服 SaaS 平台 API")
+                        .description("智能客服 SaaS 多租户平台 RESTful API 文档")
+                        .version("1.0.0")
+                        .contact(new Contact()
+                                .name("ICS Team")
+                                .email("support@example.com"))
+                        .license(new License()
+                                .name("Private")
+                                .url("https://example.com")));
+    }
+}

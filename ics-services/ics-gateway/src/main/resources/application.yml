@@ -1,0 +1,88 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ics-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+      config:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        file-extension: yaml
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      routes:
+        # 平台服务
+        - id: ics-platform
+          uri: lb://ics-platform
+          predicates:
+            - Path=/api/v1/platform/**
+          filters:
+            - StripPrefix=3
+        # 会话服务
+        - id: ics-conversation
+          uri: lb://ics-conversation
+          predicates:
+            - Path=/api/v1/conversation/**
+          filters:
+            - StripPrefix=3
+        # 知识库服务
+        - id: ics-knowledge
+          uri: lb://ics-knowledge
+          predicates:
+            - Path=/api/v1/knowledge/**
+          filters:
+            - StripPrefix=3
+        # 规则引擎服务
+        - id: ics-rule-engine
+          uri: lb://ics-rule-engine
+          predicates:
+            - Path=/api/v1/rule/**
+          filters:
+            - StripPrefix=3
+        # AI 服务
+        - id: ics-ai
+          uri: lb://ics-ai
+          predicates:
+            - Path=/api/v1/ai/**
+          filters:
+            - StripPrefix=3
+        # 数据分析服务
+        - id: ics-analytics
+          uri: lb://ics-analytics
+          predicates:
+            - Path=/api/v1/analytics/**
+          filters:
+            - StripPrefix=3
+        # 集成服务
+        - id: ics-integration
+          uri: lb://ics-integration
+          predicates:
+            - Path=/api/v1/integration/**
+          filters:
+            - StripPrefix=3
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+
+# JWT 配置
+jwt:
+  secret: ${JWT_SECRET:ics-jwt-secret-key-must-be-at-least-256-bits-long}
+  expiration: 86400000  # 24 hours
+
+# 限流配置
+rate-limit:
+  enabled: true
+  default-rate: 10  # 免费版默认 10 req/s
+
+# 日志
+logging:
+  level:
+    com.ics: DEBUG
+    org.springframework.cloud.gateway: DEBUG
